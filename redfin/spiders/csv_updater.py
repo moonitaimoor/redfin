@@ -36,7 +36,7 @@ class CsvUpdaterSpider(scrapy.Spider):
             house = row[4] + ' ' + row[5]
             url = f'https://www.redfin.com/stingray/do/location-autocomplete?location={house}&start=0&count=10&v=2&market=houston&al=1&iss=false&ooa=true&mrs=false&lat=29.281849&lng=-94.803532'
             yield scrapy.Request(url=url, callback=self.requester, meta=d)
-            break
+            
 
     def requester(self, response):
         text = response.text[4:]
