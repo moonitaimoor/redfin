@@ -2,7 +2,7 @@ import scrapy
 from csv import reader
 import json
 from urllib.parse import urljoin
-
+from urllib.request import urlopen
 
 class CsvUpdaterSpider(scrapy.Spider):
     name = 'csv_updater'
@@ -11,30 +11,32 @@ class CsvUpdaterSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         i = 0
-        with open(r'C:\Users\Haan\Documents\Projects\redfin\redfin\Property Status Report.csv') as csv_file:
-            csv_reader = reader(csv_file, delimiter=',')
-            for row in csv_reader:
-                if i == 0:
-                    i += 1
-                    continue
-                d = {
-                    'Record Id': row[0],
-                    'Created Time': row[1],
-                    'HSLP ordered at': row[2],
-                    'Platform database ID (Agent)': row[3],
-                    'Display Name': row[4],
-                    'Property City': row[5],
-                    'State (Agent)': row[6],
-                    'Closing Date': row[7],
-                    'Property Status': row[8],
-                    'Property Status Updated': row[9],
-                    'Closing Date is Wrong': row[10]
-                }
-                # print(d)
-                house = row[4] + ' ' + row[5]
-                url = f'https://www.redfin.com/stingray/do/location-autocomplete?location={house}&start=0&count=10&v=2&market=houston&al=1&iss=false&ooa=true&mrs=false&lat=29.281849&lng=-94.803532'
-                yield scrapy.Request(url=url, callback=self.requester, meta=d)
-                
+        url = 'https://raw.githubusercontent.com/ubaiidullaah/redfin/master/redfin/Property%20Status%20Report.csv'
+        response = urlopen(url)
+        lines = [l.decode('utf-8') for l in response.readlines()]
+        csv_reader = reader(lines)
+        for row in csv_reader:
+            if i == 0:
+                i += 1
+                continue
+            d = {
+                'Record Id': row[0],
+                'Created Time': row[1],
+                'HSLP ordered at': row[2],
+                'Platform database ID (Agent)': row[3],
+                'Display Name': row[4],
+                'Property City': row[5],
+                'State (Agent)': row[6],
+                'Closing Date': row[7],
+                'Property Status': row[8],
+                'Property Status Updated': row[9],
+                'Closing Date is Wrong': row[10]
+            }
+            # print(d)
+            house = row[4] + ' ' + row[5]
+            url = f'https://www.redfin.com/stingray/do/location-autocomplete?location={house}&start=0&count=10&v=2&market=houston&al=1&iss=false&ooa=true&mrs=false&lat=29.281849&lng=-94.803532'
+            yield scrapy.Request(url=url, callback=self.requester, meta=d)
+            break
 
     def requester(self, response):
         text = response.text[4:]
