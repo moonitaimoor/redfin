@@ -81,7 +81,7 @@ class CsvUpdaterSpider(scrapy.Spider):
                 date_updated = f'{d_list[1].replace(",","")}-{d_list[0]}-{d_list[2]}'.strip()
             except:
                 d_list = response.xpath('//div[@class="source-info"]/text()').getall()[-2].split()
-                date_updated = f'{d_list[1].replace(",","")}-{d_list[0]}-{d_list[2]}'.strip()
+                date_updated = f'{d_list[1].replace(",","")}-{d_list[0]}-{d_list[2]}'.strip().replace('(','')
         except:
             pass
         yield {
