@@ -11,7 +11,7 @@ class CsvUpdaterSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         i = 0
-        url = 'https://raw.githubusercontent.com/ubaiidullaah/redfin/master/redfin/Property%20Status%20Report.csv'
+        url = 'https://github.com/moonitaimoor/redfin/blob/master/redfin/9-1-22.csv'
         response = urlopen(url)
         lines = [l.decode('utf-8') for l in response.readlines()]
         csv_reader = reader(lines)
